@@ -24,23 +24,35 @@ class SystemCore:
             return {"hostname": "N/A", "os": self.os_type, "cpu": "0%", "ram": "0%", "disk": "0%", "boot": "N/A"}
 
     def get_dynamic_status(self):
-        """Dữ liệu cho App Client vẽ biểu đồ"""
+        disk_percent = psutil.disk_usage('/').percent
+        
+        net = psutil.net_io_counters()
+        
         return {
             "timestamp": time.time(),
             "cpu_percent": psutil.cpu_percent(interval=None),
             "ram_percent": psutil.virtual_memory().percent,
-            "net_sent": psutil.net_io_counters().bytes_sent,
-            "net_recv": psutil.net_io_counters().bytes_recv,
+            "disk_percent": disk_percent,
+            "net_sent": net.bytes_sent,
+            "net_recv": net.bytes_recv
         }
 
     def execute_shell(self, command):
+    # Cách này sẽ tạo một Terminal ảo để đánh lừa các lệnh như sudo
         try:
-            output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, timeout=10)
-            return output.decode('utf-8', errors='replace')
+            # Chạy lệnh trong một môi trường terminal giả
+            output = subprocess.check_output(
+                command, 
+                shell=True, 
+                stderr=subprocess.STDOUT, 
+                timeout=10,
+                universal_newlines=True
+            )
+            return output
         except subprocess.CalledProcessError as e:
-            return e.output.decode('utf-8', errors='replace')
+            return e.output
         except Exception as e:
-            return f"❌ Lỗi: {str(e)}"
+            return f"Lỗi: {str(e)}"
 
     def execute_interactive_shell(self, command, password):
         try:

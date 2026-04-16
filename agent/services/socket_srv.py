@@ -1,6 +1,7 @@
 import socket
 import json
 import threading
+import subprocess
 
 def handle_client(client_socket, addr, sys_core):
     print(f"[+] Client kết nối: {addr}")
@@ -15,10 +16,14 @@ def handle_client(client_socket, addr, sys_core):
 
                 if action == "get_metrics":
                     response = {"status": "success", "data": sys_core.get_dynamic_status()}
-                elif action == "execute_cmd":
+                elif action == "run_cmd": # Đổi từ execute_cmd thành run_cmd cho khớp Client
                     cmd = request.get("command")
-                    result = sys_core.execute_shell(cmd)
-                    response = {"status": "success", "output": result}
+                    if cmd:
+                        result = sys_core.execute_shell(cmd)
+                        response = {"status": "success", "output": result}
+                    else:
+                        response = {"status": "error", "message": "Lệnh trống"}
+                
                 else:
                     response = {"status": "error", "message": "Lệnh không xác định"}
             except json.JSONDecodeError:
