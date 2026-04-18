@@ -15,7 +15,6 @@ try:
     from services.socket_srv import start_socket_server
 except ImportError as e:
     print(f"❌ Lỗi Import: {e}")
-    print("Mày kiểm tra xem đã tạo file __init__.py trong folder core và services chưa!")
     sys.exit(1)
 
 def load_config():
@@ -29,8 +28,7 @@ def load_config():
         }
         with open(config_path, 'w') as f:
             json.dump(default_config, f, indent=4)
-        print(f"❌ Chưa có file config. Tao đã tạo mẫu tại {config_path}.")
-        print("👉 Mày mở file đó ra điền Token Bot và Admin ID vào rồi chạy lại nhé!")
+        print(f"❌ Chưa có file config. Đã tạo mẫu tại {config_path}.")
         sys.exit(1)
     
     with open(config_path, 'r') as f:

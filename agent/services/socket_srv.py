@@ -16,13 +16,17 @@ def handle_client(client_socket, addr, sys_core):
 
                 if action == "get_metrics":
                     response = {"status": "success", "data": sys_core.get_dynamic_status()}
-                elif action == "run_cmd": # Đổi từ execute_cmd thành run_cmd cho khớp Client
+                elif action == "run_cmd":
                     cmd = request.get("command")
                     if cmd:
                         result = sys_core.execute_shell(cmd)
                         response = {"status": "success", "output": result}
                     else:
                         response = {"status": "error", "message": "Lệnh trống"}
+                elif action == "list_dir":
+                    path = request.get("path")
+                    response = sys_core.list_directory(path)
+                    client_socket.send((json.dumps(response) + "\n").encode('utf-8'))
                 
                 else:
                     response = {"status": "error", "message": "Lệnh không xác định"}

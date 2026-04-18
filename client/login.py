@@ -17,16 +17,15 @@ class LoginWindow(QWidget):
         layout.setContentsMargins(30, 40, 30, 40)
         layout.setSpacing(15)
         
-        title = QLabel("TELENODE") # Đổi cái chữ to nhất ở giữa
+        title = QLabel("TELENODE")
         title.setStyleSheet("color: #0063b1; font-weight: bold;")
         title.setStyleSheet("color: #0063b1;")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title)
 
-        # Style chung cho ô nhập
         input_style = "padding: 10px; border: 1px solid #ccc; border-radius: 5px; color: #333;"
 
-        self.user_input = QLineEdit("vanphat111") # Để mặc định tên mày luôn cho tiện
+        self.user_input = QLineEdit("vanphat111")
         self.user_input.setPlaceholderText("SSH Username")
         self.user_input.setStyleSheet(input_style)
         layout.addWidget(self.user_input)
@@ -61,20 +60,16 @@ class LoginWindow(QWidget):
         ip = self.ip_input.text().strip()
         port_raw = self.port_input.text().strip()
 
-        # 1. Kiểm tra IP trống
         if not ip:
             self.error_label.setText("❌ Vui lòng nhập IP")
             return
         
-        # 2. Kiểm tra Port trống
         if not port_raw:
             self.error_label.setText("❌ Vui lòng nhập port")
             return
 
-        # 3. Kiểm tra Port có phải là số không
         try:
             port = int(port_raw)
-            # Nếu mọi thứ OK thì xóa thông báo lỗi và gửi tín hiệu
             self.error_label.setText("") 
             self.connection_submitted.emit(ip, port, self.user_input.text().strip())
         except ValueError:

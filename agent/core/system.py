@@ -74,3 +74,30 @@ class SystemCore:
         if self.os_type == "Windows":
             return "shutdown /s /t 1" if action == "shutdown" else "shutdown /r /t 1"
         return "shutdown -h now" if action == "shutdown" else "reboot"
+    
+    def list_directory(self, path):
+        try:
+            if not path or not os.path.exists(path):
+                path = os.path.expanduser("~")
+                
+            items = []
+            for item in os.listdir(path):
+                try:
+                    full_path = os.path.join(path, item)
+                    is_dir = os.path.isdir(full_path)
+                    # Chỉ lấy size nếu không phải là folder
+                    size = os.path.getsize(full_path) if not is_dir else 0
+                    
+                    items.append({
+                        "name": item,
+                        "is_dir": is_dir,
+                        "size": size
+                    })
+                except (OSError, PermissionError):
+                    # Bỏ qua các file lỗi hoặc không có quyền đọc (như .steampath)
+                    continue
+            
+            items.sort(key=lambda x: (not x["is_dir"], x["name"].lower()))
+            return {"status": "success", "data": items, "current_path": path}
+        except Exception as e:
+            return {"status": "error", "message": str(e)}

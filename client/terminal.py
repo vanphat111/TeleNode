@@ -14,13 +14,11 @@ class TerminalWidget(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        # Màn hình hiển thị (Nền đen chữ xanh)
         self.output_area = QTextEdit()
         self.output_area.setReadOnly(True)
         self.output_area.setFont(QFont("Monospace", 11))
         self.output_area.setStyleSheet("background-color: #0c0c0c; color: #00ff00; border: none; padding: 10px;")
         
-        # Ô nhập lệnh
         self.input_line = QLineEdit()
         self.input_line.setFont(QFont("Monospace", 11))
         self.input_line.setStyleSheet("background-color: #0c0c0c; color: #ffffff; border: none; border-top: 1px solid #333; padding: 10px;")
@@ -38,11 +36,9 @@ class TerminalWidget(QWidget):
         cmd = self.input_line.text().strip()
         if not cmd: return
 
-        # Hiển thị lệnh vừa gõ lên màn hình
         self.output_area.append(f"<b style='color: white;'>{self.prompt}{cmd}</b>")
         self.input_line.clear()
 
-        # Gửi lệnh qua Agent
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.settimeout(5)

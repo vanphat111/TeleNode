@@ -35,7 +35,6 @@ class MetricCard(QFrame):
         bg = "#e8f2ff" if self.is_active else "#f8f9fa"
         border = "#0063b1" if self.is_active else "#dee2e6"
         
-        # FIX: Ép màu của value_label theo accent_color
         self.setStyleSheet(f"""
             MetricCard {{ 
                 background-color: {bg}; 
@@ -67,18 +66,14 @@ class MonitorWidget(QWidget):
         self.timer.start(1000)
 
     def init_ui(self):
-        # 1. TẠO LAYOUT CHÍNH (Gán thẳng vào self luôn)
-        # Lưu ý: QHBoxLayout(self) là nó tự gán layout cho widget rồi, ĐỪNG gọi self.setLayout(layout) nữa.
         main_layout = QHBoxLayout(self) 
         main_layout.setContentsMargins(15, 15, 15, 15)
         main_layout.setSpacing(20)
 
         self.header = QLabel("TeleNode Resource Monitor")
 
-        # 2. BẢNG MÀU
         colors = {"CPU": "#0063b1", "RAM": "#881798", "Disk": "#7a7574", "Network": "#d13438"}
 
-        # 3. SIDEBAR (Chứa các card)
         sidebar = QVBoxLayout()
         self.cards = {
             "CPU": MetricCard("CPU", "CPU", colors["CPU"]),
@@ -93,7 +88,6 @@ class MonitorWidget(QWidget):
         self.cards["CPU"].is_active = True
         self.cards["CPU"].update_style()
 
-        # 4. GRAPH AREA
         graph_area = QVBoxLayout()
         self.header = QLabel("CPU Utilization")
         self.header.setFont(QFont("Sans Serif", 18, QFont.Weight.Light))
@@ -113,7 +107,6 @@ class MonitorWidget(QWidget):
         graph_area.addWidget(self.header)
         graph_area.addWidget(self.graph)
 
-        # 5. RÁP SIDEBAR VÀ GRAPH VÀO LAYOUT CHÍNH
         main_layout.addLayout(sidebar, 1)
         main_layout.addLayout(graph_area, 4)
 
@@ -141,7 +134,6 @@ class MonitorWidget(QWidget):
                 if res["status"] != "success": return
                 d = res["data"]
 
-            # Logic tính toán
             net_total = d["net_sent"] + d["net_recv"]
             net_speed = (net_total - self.last_net_total) / 1024 if self.last_net_total > 0 else 0
             self.last_net_total = net_total
